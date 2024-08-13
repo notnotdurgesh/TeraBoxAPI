@@ -5,4 +5,5 @@ cachetools
 httpx
 flask_cors
 flask_limiter
+"flask[async]"
 gunicorn
