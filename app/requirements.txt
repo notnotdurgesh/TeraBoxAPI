@@ -1,0 +1,6 @@
+Flask
+pymongo
+requests
+cachetools
+httpx
+flask_cors
