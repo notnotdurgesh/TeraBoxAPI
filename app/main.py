@@ -5,20 +5,11 @@ from pymongo import MongoClient
 import httpx
 from urllib.parse import urlparse, unquote
 from cachetools import TTLCache
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 from flask_cors import CORS
+import asyncio
 
 app = Flask(__name__)
 CORS(app)
-
-# Set up rate limiting
-limiter = Limiter(
-    get_remote_address,
-    app=app,
-    default_limits=["100 per minute"]
-)
-
 
 
 # Cache setup to store video info for 5 minutes
@@ -48,7 +39,6 @@ async def get_video_info(url):
         return video_data
 
 @app.route('/api/v1/save_video_info', methods=['GET'])
-@limiter.limit("10 per minute")
 async def save_video_info():
     encoded_url = request.args.get('url')
     
@@ -91,7 +81,6 @@ async def save_video_info():
         return jsonify({"error": "An internal server error occurred", "message": str(e)}), 500
 
 @app.route('/api/v1/admin/db_info', methods=['GET'])
-@limiter.limit("5 per minute")
 def get_db_info():
     try:
         total_files = videos_collection.count_documents({})
